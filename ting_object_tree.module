@@ -42,13 +42,49 @@ function ting_object_tree_theme($existing, $type, $theme, $path) {
   );
 }
 
-function  ting_object_tree_show ($var1, $var2, $var3) {
-    $query = 'krimi';
+function ting_object_tree_show ($var1, $var2, $var3) {
+    //ting_object_tree_save_query ('(facet.category="voksenmaterialer" and facet.genreCategory="fiktion")', '/romaner');
+    //ting_object_tree_save_query ('(facet.subject="krimi")', '/romaner/krimi');
+  
+    $query = ting_object_tree_get_current_query();
+    file_put_contents("/var/www/drupal7vm/drupal/debug/obj7.txt", print_r($query  , TRUE), FILE_APPEND);
     $start = 1;
     $size = 50;
     $objects = ting_object_tree_find_entities_with_covers($query, $start, $size, array ());
-    file_put_contents("/var/www/drupal7vm/drupal/debug/obj1.txt", print_r($objects , TRUE), FILE_APPEND);
+    //file_put_contents("/var/www/drupal7vm/drupal/debug/obj1.txt", print_r($objects , TRUE), FILE_APPEND);
+
+    file_put_contents("/var/www/drupal7vm/drupal/debug/obj6.txt", print_r(request_path()  , TRUE), FILE_APPEND);
     return theme('ting_object_tree_page', array('items' => $objects, 'links' => NULL));
+}
+
+function ting_object_tree_save_query($query, $path) {
+    $queries = variable_get('ting_object_tree_queries');
+    $queries[$path] = $query;
+    variable_set('ting_object_tree_queries', $queries);
+}
+
+function ting_object_tree_get_query($path) {
+  $queries = variable_get('ting_object_tree_queries');
+  if (array_key_exists($path, $queries))
+    return $queries[$path];
+  else
+    return false;
+}
+
+function ting_object_tree_get_current_query() {
+    $path = request_path();
+    $path_elements = explode('/', $path);
+    file_put_contents("/var/www/drupal7vm/drupal/debug/obj8.txt", print_r($path_elements  , TRUE), FILE_APPEND);
+    $path_part = '/';
+    $query_parts = array();
+    foreach($path_elements as $path_element) {
+       $path_part .= $path_element;
+       file_put_contents("/var/www/drupal7vm/drupal/debug/obj9.txt", print_r($path_part , TRUE), FILE_APPEND);
+       $query_parts[] = ting_object_tree_get_query ($path_part); 
+       file_put_contents("/var/www/drupal7vm/drupal/debug/obj10.txt", print_r($query_parts , TRUE), FILE_APPEND);
+       $path_part .= '/';
+    }
+    return implode (' and ', $query_parts);
 }
 
 /**
@@ -79,6 +115,9 @@ function ting_object_tree_find_entities_with_covers($query, $start, $size, array
 
   $sal_query = ting_start_query()
           ->withRawQuery($query)
+          ->withFacets(array('facet.subject'))
+          ->withTermsPrFacet(100)
+          ->withSort('date_descending')
          // ->withPage($page)
           ->withCount($size)
           ->withMaterialFilter($ignore, FALSE);

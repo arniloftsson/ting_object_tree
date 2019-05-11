@@ -10,7 +10,7 @@ and open the template in the editor.
 
 .ting-object-tree-item {
     display: inline-block;
-    width: 158px;
+    width: 194px;
     margin: auto;
     min-height: 340px;
 }
@@ -32,6 +32,6 @@ and open the template in the editor.
 .ting-object-tree {
     display: flex;
     flex-wrap: wrap;
-    align-content:space-between;
+    justify-content: space-evenly;
  
 }
