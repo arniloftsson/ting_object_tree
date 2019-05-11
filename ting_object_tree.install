@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function ting_object_tree_schema() {
+//  $schema = array();
+//  $schema['cache_ting_smart_carousel'] = drupal_get_schema_unprocessed('system', 'cache');
+//
+//  return $schema;
+}
+
+/**
+ * Add new cache table.
+ */
+function ting_object_tree_update_7001() {
+//  $schema['cache_ting_smart_carousel'] = drupal_get_schema_unprocessed('system', 'cache');
+//  db_create_table('cache_ting_smart_carousel', $schema['cache_ting_smart_carousel']);
+}

@@ -1,0 +1,11 @@
+name = Ting Object Tree
+description = A browsable tree of ting object
+package = Ding!
+version = "7.x-1.x-dev"
+core = 7.x
+dependencies[] = ting
+dependencies[] = search
+dependencies[] = ting_smart_carousel
+stylesheets[all][] = css/object-tree.css
+
+

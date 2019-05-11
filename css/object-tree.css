@@ -1,0 +1,37 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 11-05-2019, 15:13:10
+    Author     : DQ26525
+*/
+
+.ting-object-tree-item {
+    display: inline-block;
+    width: 158px;
+    margin: auto;
+    min-height: 340px;
+}
+
+.ting-object-tree-item h2 {
+    font-family: FaktPro-Normal,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0px;
+    color: #000000;
+    padding-top: 7px;
+}
+
+.ting-object-tree-item .field-name-ting-author {
+    color: #000000;
+    font-family: FaktPro-SemiBold,sans-serif;
+}
+
+.ting-object-tree {
+    display: flex;
+    flex-wrap: wrap;
+    align-content:space-between;
+ 
+}
