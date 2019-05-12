@@ -33,5 +33,31 @@ and open the template in the editor.
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
- 
+}
+
+.ting-object-tree-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    background-color: #FFFFFF;
+    padding-top: 20px;
+    padding-bottom: 20px;
+        
+}
+
+.ting-object-tree-link {
+    display: inline-block;
+    width: 194px;
+    margin: auto;
+}
+
+.ting-object-tree-link a {
+    font-size: 18px;
+    color: #006a97;
+    text-transform: capitalize;
+        
+}
+
+.ting-object-tree-links h2 {
+    display: block;
 }
