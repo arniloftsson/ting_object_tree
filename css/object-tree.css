@@ -39,7 +39,7 @@ and open the template in the editor.
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    background-color: #FFFFFF;
+    background: linear-gradient(rgba(255,138,0,.2),#fff);
     padding-top: 20px;
     padding-bottom: 20px;
         

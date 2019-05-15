@@ -7,5 +7,6 @@ dependencies[] = ting
 dependencies[] = search
 dependencies[] = ting_smart_carousel
 stylesheets[all][] = css/object-tree.css
+files[]=lib/TingClientMultiRequestAdapter.php
 
 

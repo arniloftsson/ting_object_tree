@@ -5,6 +5,7 @@
  * Ting smart carousel module main file.
  */
 use OpenSearch\OpenSearchTingObjectCollection;
+use TingClientMultiRequestAdapter;
 
 function ting_object_tree_menu() {
   $items = array();
@@ -50,11 +51,49 @@ function ting_object_tree_show($var1, $var2, $var3) {
   file_put_contents("/var/www/drupal7vm/drupal/debug/obj7.txt", print_r($query, TRUE), FILE_APPEND);
   $start = 1;
   $size = 50;
+  
+  ting_object_tree_search_multi($query );
+  
+  
   $result = ting_object_tree_find_entities_with_covers($query, $start, $size, array());
   //file_put_contents("/var/www/drupal7vm/drupal/debug/obj1.txt", print_r($objects , TRUE), FILE_APPEND);
 
   file_put_contents("/var/www/drupal7vm/drupal/debug/obj6.txt", print_r(request_path(), TRUE), FILE_APPEND);
   return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links']));
+}
+
+function ting_object_tree_search_multi($query) {
+  $multi_request = new TingClientMultiRequestAdapter();
+  $request = opensearch_get_request_factory()->getSearchRequest();
+
+  $request->setQuery($query);
+  if ($agency = variable_get('ting_agency', FALSE)) {
+    $request->setAgency($agency);
+  }
+  $request->setStart(1);
+  $request->setNumResults(50);
+  // Set search profile, if applicable.
+  $profile = variable_get('opensearch_search_profile', '');
+  if (!empty($profile)) {
+    $request->setProfile($profile);
+  }
+  file_put_contents("/var/www/drupal7vm/drupal/debug/multi1.txt", print_r($request, TRUE), FILE_APPEND);
+  $req = array();
+  for ($i = 1; $i <= 10; $i++) {
+    $request->setStart($i);
+    $req[] = $request;
+  }
+
+  $results = $multi_request->execute($req);
+  file_put_contents("/var/www/drupal7vm/drupal/debug/multi2.txt", print_r($results, TRUE), FILE_APPEND);
+  $collections = array();
+  foreach ($results as $result) {
+    $response = $request->parseResponse($result);
+    file_put_contents("/var/www/drupal7vm/drupal/debug/multi11.txt", print_r($response , TRUE), FILE_APPEND);
+    $collections = array_merge($collections, $response->collections); 
+    
+  }
+  file_put_contents("/var/www/drupal7vm/drupal/debug/multi12.txt", print_r($collections  , TRUE), FILE_APPEND);
 }
 
 function ting_object_tree_save_query($query, $path) {
