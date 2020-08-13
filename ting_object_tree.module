@@ -10,12 +10,11 @@ use OpenSearch\OpenSearchTingObjectCollection;
 function ting_object_tree_menu() {
   $items = array();
 
-  $items['romaner/%'] = array(
+  $items['bog/%/%/%'] = array(
       'title' => 'Ting object tree',
       'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(1, 2, 3),
+      'page arguments' => array(0, 1, 2, 3),
       'access arguments' => array('access content'),
-          //'type' => MENU_CALLBACK,
   );
 
   return $items;
@@ -43,90 +42,50 @@ function ting_object_tree_theme($existing, $type, $theme, $path) {
   );
 }
 
-function ting_object_tree_show($var1, $var2, $var3) {
-  //ting_object_tree_save_query ('(facet.category="voksenmaterialer" and facet.genreCategory="fiktion")', '/romaner');
-  //ting_object_tree_save_query ('(facet.subject="krimi")', '/romaner/krimi');
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * It simply tells panels where to find the .inc files that define various
+ * args, contexts, content_types.
+ */
+function ting_object_tree_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && !empty($plugin)) {
+    return "plugins/$plugin";
+  }
+}
 
-  $query = ting_object_tree_get_current_query();
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj7.txt", print_r($query, TRUE), FILE_APPEND);
+function ting_object_tree_show($type, $adult, $fiction, $subject) {
+
+  $query = ting_object_tree_get_query($type, $adult, $fiction, $subject);
   $start = 1;
   $size = 50;
-  
-  ting_object_tree_search_multi($query );
-  
-  
+   
   $result = ting_object_tree_find_entities_with_covers($query, $start, $size, array());
-  //file_put_contents("/var/www/drupal7vm/drupal/debug/obj1.txt", print_r($objects , TRUE), FILE_APPEND);
 
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj6.txt", print_r(request_path(), TRUE), FILE_APPEND);
   return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links']));
 }
 
-function ting_object_tree_search_multi($query) {
-  $multi_request = new TingClientMultiRequestAdapter();
-  $request = opensearch_get_request_factory()->getSearchRequest();
 
-  $request->setQuery($query);
-  if ($agency = variable_get('ting_agency', FALSE)) {
-    $request->setAgency($agency);
-  }
-  $request->setStart(1);
-  $request->setNumResults(50);
-  // Set search profile, if applicable.
-  $profile = variable_get('opensearch_search_profile', '');
-  if (!empty($profile)) {
-    $request->setProfile($profile);
-  }
-  file_put_contents("/var/www/drupal7vm/drupal/debug/multi1.txt", print_r($request, TRUE), FILE_APPEND);
-  $req = array();
-  for ($i = 1; $i <= 10; $i++) {
-    $request->setStart($i);
-    $req[] = $request;
-  }
 
-  $results = $multi_request->execute($req);
-  file_put_contents("/var/www/drupal7vm/drupal/debug/multi2.txt", print_r($results, TRUE), FILE_APPEND);
-  $collections = array();
-  foreach ($results as $result) {
-    $response = $request->parseResponse($result);
-    file_put_contents("/var/www/drupal7vm/drupal/debug/multi11.txt", print_r($response , TRUE), FILE_APPEND);
-    $collections = array_merge($collections, $response->collections); 
-    
-  }
-  file_put_contents("/var/www/drupal7vm/drupal/debug/multi12.txt", print_r($collections  , TRUE), FILE_APPEND);
+function ting_object_tree_get_query($type, $adult, $fiction, $subject) {
+   $query = ting_object_tree_get_type($type);
+   if ($adult == 'børn') {
+     $query .= ' and facet.category="børnematerialer"';
+   } else {
+     $query .= ' and facet.category="voksenmaterialer"';
+   }
+   if ($fiction == 'fag') {
+     $query .= ' and facet.genreCategory="nonfiktion"';
+   } else {
+     $query .= ' and facet.genreCategory="fiktion"';
+   }
+   $query .= ' and facet.subject="' . $subject . '"';
+   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj.txt", print_r($query, TRUE), FILE_APPEND);
+   return $query;
 }
 
-function ting_object_tree_save_query($query, $path) {
-  $queries = variable_get('ting_object_tree_queries');
-  $queries[$path] = $query;
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj16.txt", print_r($queries, TRUE), FILE_APPEND);
-  variable_set('ting_object_tree_queries', $queries);
-}
-
-function ting_object_tree_get_query($path) {
-  $queries = variable_get('ting_object_tree_queries');
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj17.txt", print_r($queries, TRUE), FILE_APPEND);
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj18.txt", print_r($path, TRUE), FILE_APPEND);
-  if (array_key_exists($path, $queries))
-    return $queries[$path];
-  else
-    return false;
-}
-
-function ting_object_tree_get_current_query() {
-  $path = request_path();
-  $path_elements = explode('/', $path);
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj8.txt", print_r($path_elements, TRUE), FILE_APPEND);
-  $path_part = '/';
-  $query_parts = array();
-  foreach ($path_elements as $path_element) {
-    $path_part .= $path_element;
-    file_put_contents("/var/www/drupal7vm/drupal/debug/obj9.txt", print_r($path_part, TRUE), FILE_APPEND);
-    $query_parts[] = ting_object_tree_get_query($path_part);
-    file_put_contents("/var/www/drupal7vm/drupal/debug/obj10.txt", print_r($query_parts, TRUE), FILE_APPEND);
-    $path_part .= '/';
-  }
-  return implode(' and ', $query_parts);
+function ting_object_tree_get_type($type) {
+  return 'facet.type="' . $type . '"';
 }
 
 /**
@@ -150,11 +109,6 @@ function ting_object_tree_find_entities_with_covers($query, $start, $size, array
   $finished = FALSE;
   $entities = array();
 
-
-  // Determine what page we are on based on the start position and size.
-  // Start is 0 indexed while page number is 1 indexed.
-//  $page = floor($start / $size) + 1;
-
   $sal_query = ting_start_query()
           ->withRawQuery($query)
           ->withFacets(array('facet.subject'))
@@ -166,33 +120,76 @@ function ting_object_tree_find_entities_with_covers($query, $start, $size, array
 
   $sal_query->reply_only = true;
   $results = $sal_query->execute();
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj2.txt", print_r($results, TRUE), FILE_APPEND);
+
   if (!$results->hasMoreResults()) {
     $finished = TRUE;
   }
+  $collections = $results->getTingEntityCollections();
 
-
+  
+ $collections = $results->getTingEntityCollections();
   foreach ($results->openSearchResult->collections as $collection) {
-    $opensearch_collection = new OpenSearchTingObjectCollection($collection);
-    $object = $opensearch_collection->getPrimaryObject();
+    $object = $collection->getPrimary_object();
     $entities[$object->getId()] = $object;
   }
-
+file_put_contents("/var/www/drupal7vm/drupal/debug/newobj2.txt", print_r($entities, TRUE), FILE_APPEND);
   // See what materials have covers.
-  $covers = ting_smart_carousel_covers_get(array_keys($entities));
+  $covers = ting_covers_get(array_keys($entities));
 
   // Loop over the fetched covers and build items.
   foreach ($covers as $id => $path) {
     $entities_found_with_covers[$id] = $entities[$id];
   }
-  $objects =  ting_smart_carousel_proces_results($entities_found_with_covers);
-  $links = ting_object_tree_get_subjects($results);
+  
+  $objects =  ting_object_tree_proces_results($entities_found_with_covers);
+  $links = '';//ting_object_tree_get_subjects($results);
   $result = array(
           'objects' => $objects,
           'links' => $links,
   );
 
   return $result;
+}
+
+function ting_object_tree_proces_results(array $objects) {
+  $items = array();
+  foreach ($objects as $object) {
+  $cover = ting_object_tree_get_cover($object);
+  $creators = ting_object_tree_get_creators($object);
+  $items[] = theme ('ting_object_tree_item', array('title' => $object->getTitle(), 'creators' => $creators, 'cover' => $cover,));
+  }
+  return $items;
+}
+
+function ting_object_tree_get_cover($object) {
+  $image = theme('ting_object_cover', array('elements' => array('#object' => $object, '#image_style' => 'ding_list_medium')));
+  $options = array(
+      'html' => TRUE,
+      'attributes' => array('title' => $object->getTitle()),
+  );
+  return l($image, ting_object_tree_uri($object), $options);
+}
+function ting_object_tree_get_creators($object) {
+  if (count($object->getCreators())) {
+    if ($object->getDate()!= '') {
+      $markup_string = t('By !author_link (@year)', array(
+          '!author_link' => implode(', ', $object->getCreators()),
+          // So wrong, but appears to be the way the data is.
+          '@year' => $object->getDate(),
+      ));
+    } else {
+      $markup_string = t('By !author_link', array(
+          '!author_link' => implode(', ', $object->getCreators()),
+      ));
+    }
+  } elseif ($object->getDate() != '') {
+    $markup_string = t('(@year)', array('@year' => $object->getDate()));
+  }
+  return $markup_string;
+}
+
+function ting_object_tree_uri($object) {
+  return 'ting/collection/' . $object->id;
 }
 
 function ting_object_tree_get_subjects($results) {
@@ -204,37 +201,83 @@ function ting_object_tree_get_subjects($results) {
   foreach ($facets['facet.subject']->getTerms() as $term ) {
     if ($term->getName() != $current) {
       $links[] = l($term->getName() . ' (' . $term->getCount() . ')', $path . '/' . $term->getName());
-      ting_object_tree_save_query('facet.subject="' . $term->getName() . '"', '/' . $path . '/' . $term->getName());
     }
-    file_put_contents("/var/www/drupal7vm/drupal/debug/obj15.txt", print_r($links , TRUE), FILE_APPEND);
   }
   file_put_contents("/var/www/drupal7vm/drupal/debug/obj12.txt", print_r($facets, TRUE), FILE_APPEND);
   return $links;
 }
 
-// /**
-//  * Implements hook_ctools_plugin_directory().
-//  *
-//  * It simply tells panels where to find the .inc files that define various
-//  * args, contexts, content_types.
-//  */
-//function ting_smart_carousel_ctools_plugin_directory($module, $plugin) {
-// if ($module == 'ctools' && !empty($plugin)) {
-//   return 'plugins/' . $plugin;
-// }
-//}
-//
-// /**
-//  * Implements hook_ctools_plugin_api().
-//  */
-//function ting_smart_carousel_ctools_plugin_api($module, $api) {
-//   if ($module == 'page_manager' && $api == 'pages_default') {
-//     return array('version' => 1);
-//   }
-//   if ($module == "strongarm" && $api == "strongarm") {
-//    return array("version" => "1");
-//  }
-//}
+
+function ting_object_tree_get_breadcrumb($object) {
+  $ting_object = $object->getTingObject();
+  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj5.txt", print_r($ting_object , TRUE), FILE_APPEND);
+  $type = $ting_object->getType();
+  $audience = $ting_object->getAudience();
+  if (isset($audience) && $audience[0] == 'børnematerialer') {
+    $audience = 'børn';
+  } else {
+    $audience = 'voksen';
+  }
+  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj6.txt", print_r($audience, TRUE), FILE_APPEND);
+  if ($ting_object->isFiction()) {
+    $fiction = 'skøn';
+  } else {
+    $fiction = 'fag';
+  }
+  $subject = ting_object_tree_get_subject($ting_object); 
+  $link_text = $type . '->' . $audience . '->' . $fiction . '->' . $subject;
+  $path = '/' . $type . '/' . $audience . '/' . $fiction . '/' . $subject;
+  $bread_crumb = l($link_text, $path);
+   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj7.txt", print_r($bread_crumb, TRUE), FILE_APPEND);
+  return $bread_crumb;
+}
+
+function ting_object_tree_get_subject($object) {
+  $subject = null;
+  $subjects = $object->getSubjects();
+  $genre = $object->getGenre();
+  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj11.txt", print_r($subjects, TRUE), FILE_APPEND);
+  if (isset($genre) && !empty($genre)) {
+    $subject = $genre[0];
+    //file_put_contents("/var/www/drupal7vm/drupal/debug/path21.txt", print_r($genre  , TRUE), FILE_APPEND);
+  } elseif (isset($subjects) && !empty($subjects)) {
+    $subject = ting_object_tree_choose_subject($subjects) ;
+  } else {
+    $subject = 'ingetemne';
+  }
+  //file_put_contents("/var/www/drupal7vm/drupal/debug/path22.txt", print_r($subject  , TRUE), FILE_APPEND);
+  return $subject;
+}
+
+function ting_object_tree_choose_subject($subjects) {
+  $subject_list = variable_get('ting_object_tree_subject_list');
+  if (!(isset($subject_list))) {
+    $module_path = drupal_get_path('module', 'ting_object_tree');
+    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj9.txt", print_r('/' . $module_path . '/data/serialized_subjects.txt', TRUE), FILE_APPEND);
+    $data = file_get_contents($module_path . '/data/serialized_subjects.txt');
+    if (isset($data)) {
+      $subject_list = unserialize($data);
+    }
+    variable_set('ting_object_tree_subject_list', $subject_list);
+  }
+  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj11.txt", print_r($subjects, TRUE), FILE_APPEND);
+  $subject_on_list = array();
+  foreach ($subjects as $subject) {
+     if (array_key_exists($subject, $subject_list)) {
+       $subject_on_list[$subject] = $subject_list[$subject];
+     }
+  }
+  if (!(empty($subject_on_list))) {
+    arsort($subject_on_list);
+    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj10.txt", print_r($subject_on_list, TRUE), FILE_APPEND);
+    $keys = array_keys($subject_on_list);
+    return $keys[0] ;
+  } else {
+    return $subjects[0];
+  }
+
+  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj8.txt", print_r($subject_list, TRUE), FILE_APPEND);
+}
 
 /**
  * Get covers for an array of ids.
@@ -290,180 +333,3 @@ function ting_object_tree_covers_get(array $requested_covers) {
 
   return $covers;
 }
-
-
-class TingClientMultiRequestAdapter  {
-  /**
-   * @var TingClientLogger
-   */
-  protected $logger;
-
-  function __construct($options = array()) {
-    $this->logger = new TingClientVoidLogger();
-  }
-
-  public function setLogger(TingClientLogger $logger) {
-    $this->logger = $logger;
-  }
-
-  public function execute($requests = array()) {
-    //$requests = $requestObject->requests ;
-    $soap_requests = array();
-   
-    foreach ($requests as $request) {
-      
-      $client = new NanoSOAPClient($request->getWsdlUrl());
-      //Prepare the parameters for the SOAP request
-      $request->getRequest();
-      $soapParameters = $request->getParameters();
-      // Separate the action from other parameters
-      $soapAction = $soapParameters['action'];
-      unset($soapParameters['action']);
-
-      // We use JSON as the default outputType.
-      if (!isset($soapParameters['outputType'])) {
-        $soapParameters['outputType'] = 'json';
-      }
-      file_put_contents("/var/www/drupal7vm/drupal/debug/multi5.txt", print_r($soapAction, TRUE), FILE_APPEND);
-      file_put_contents("/var/www/drupal7vm/drupal/debug/multi6.txt", print_r($soapParameters, TRUE), FILE_APPEND);
-      file_put_contents("/var/www/drupal7vm/drupal/debug/multi7.txt", print_r($client, TRUE), FILE_APPEND);
-      $soap_requests[] = $this->buildSoapRequest($soapAction, $soapParameters, $client);
-    }
-    file_put_contents("/var/www/drupal7vm/drupal/debug/multi4.txt", print_r($soap_requests, TRUE), FILE_APPEND);
-    $curl_options = variable_get('curl_options');
-    file_put_contents("/var/www/drupal7vm/drupal/debug/multi9.txt", print_r($curl_options , TRUE), FILE_APPEND);
-    try {
-      try {
-        $startTime = explode(' ', microtime());
-
-        $response = curl_multi($soap_requests); 
-        file_put_contents("/var/www/drupal7vm/drupal/debug/multi3.txt", print_r($response, TRUE), FILE_APPEND);
-        $stopTime = explode(' ', microtime());
-        $time = floatval(($stopTime[1]+$stopTime[0]) - ($startTime[1]+$startTime[0]));
-file_put_contents("/var/www/drupal7vm/drupal/debug/multi14.txt", print_r($time . ' - ', TRUE), FILE_APPEND);
-        //$this->logger->log('Completed SOAP request ' . $soapAction . ' ' . $request->getWsdlUrl() . ' (' . round($time, 3) . 's). Request body: ' . $client->requestBodyString . ' Response: ' . $response);
-
-        // If using JSON and DKABM, we help parse it.
-        if ($soapParameters['outputType'] == 'json') {
-          $result = array();
-          file_put_contents("/var/www/drupal7vm/drupal/debug/multi10.txt", print_r(json_decode($response), TRUE), FILE_APPEND);
-          foreach ($response as $res) {
-            $result[] = json_decode($res);
-          }
-          return $result;
-        }
-        else {
-          return $response;
-        }
-      } catch (NanoSOAPcURLException $e) {
-        //Convert NanoSOAP exceptions to TingClientExceptions as callers
-        //should not deal with protocol details
-        throw new TingClientException($e->getMessage(), $e->getCode());
-      }
-    } catch (TingClientException $e) {
-      $this->logger->log('Error handling SOAP request ' . $soapAction . ' ' . $e->getMessage());
-      throw $e;
-    }
-  }
-  
-  private function make_curl_call($requests) {
-    // Initialise and configure cURL.
-    $response = array();
-
-    foreach ($requests as $request) {
-      $ch = curl_init();
-      $curl_options = $request['options'];
-      $curl_options[CURLOPT_URL] = $request['endpoint'];
-      curl_setopt_array($ch, $curl_options);
-
-      $response[] = curl_exec($ch);
-
-      if ($response === FALSE) {
-        throw new NanoSOAPcURLException(curl_error($ch));
-      }
-      curl_close($ch);
-    }
-    // Close the cURL instance before we return.
-    return $response;
-  }
-  
-    /**
-   * Make a SOAP request.
-   *
-   * @param string $action
-   *   The SOAP action to perform/call.
-   * @param array $parameters
-   *   The parameters to send with the SOAP request.
-   * @return string
-   *   The SOAP response.
-   */
-  function buildSoapRequest($action, $parameters = array(), $client) {
-    // Set content type and send the SOAP action as a header.
-    $headers = array(
-      'Content-Type: text/xml',
-      'SOAPAction: ' . $action,
-    );
-
-    // Make a DOM document from the envelope and get the Body tag so we
-    // can add our request data to it.
-    $client->doc = new DOMDocument;
-    $client->doc->loadXML($client->generateSOAPenvelope());
-    $body = $client->doc->getElementsByTagName('Body')->item(0);
-
-    // Convert the parameters into XML elements and add them to the 
-    // body. The root element of this structure will be the action.
-    $elem = $client->convertParameter($action, $parameters);
-    $body->appendChild($elem);
-
-    // Render and store the final request string.
-    $client->requestBodyString = $client->doc->saveXML();
-
-    // Send the SOAP request to the server via CURL.
-    return $this->buildCurlRequest($client->endpoint, 'POST', $client->requestBodyString, $headers);
-  }
-  
-    /**
-   * Make a cURL request.
-   *
-   * This is usually a SOAP request, but could ostensibly be used for 
-   * other things.
-   *
-   * @param string $url
-   *   The URL to send the request to.
-   * @param string $method
-   *   The HTTP method to use. One of "GET" or "POST".
-   * @param string $body
-   *   The request body, ie. the SOAP envelope for SOAP requests.
-   * @param array $headers
-   *   Array of headers to be sent with the request.
-   * @return string
-   *   The response for the server, or FALSE on failure.
-   */
-  function buildCurlRequest($url, $method = 'GET', $body = '', $headers = array()) {
-    $curl_session = array();    
-    $curl_session['endpoint'] = $url;
-    // Array of cURL options. See the documentation for curl_setopt for 
-    // details on what options are available.
-    $agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.8) Gecko/2009032609 Firefox/3.0.8';
-    $curl_options = array(
-     // CURLOPT_URL => $url,
-      CURLOPT_USERAGENT => $agent,
-      CURLOPT_RETURNTRANSFER => TRUE,
-      //CURLOPT_PROXY => '172.18.0.30:8080' //Todo remove developercode
-    );
-
-    if ($method == 'POST') {
-      $curl_options[CURLOPT_POST] = TRUE;
-
-      if (!empty($body)) {
-        $curl_options[CURLOPT_POSTFIELDS] = $body;
-      }
-    }
-    if (!empty($headers)) {
-      $curl_options[CURLOPT_HTTPHEADER] = $headers;
-    }
-   $curl_session['options'] = $curl_options;    
-   return $curl_session;
-  }
-}
-
