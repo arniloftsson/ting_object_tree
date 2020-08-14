@@ -16,6 +16,54 @@ function ting_object_tree_menu() {
       'page arguments' => array(0, 1, 2, 3),
       'access arguments' => array('access content'),
   );
+  
+  $items['ebog/%/%/%'] = array(
+      'title' => 'Ting object tree',
+      'page callback' => 'ting_object_tree_show',
+      'page arguments' => array(0, 1, 2, 3),
+      'access arguments' => array('access content'),
+  );
+    
+  $items['lydbog/%/%/%'] = array(
+      'title' => 'Ting object tree',
+      'page callback' => 'ting_object_tree_show',
+      'page arguments' => array(0, 1, 2, 3),
+      'access arguments' => array('access content'),
+  );
+      
+  $items['musik/%/%/%'] = array(
+      'title' => 'Ting object tree',
+      'page callback' => 'ting_object_tree_show',
+      'page arguments' => array(0, 1, 2, 3),
+      'access arguments' => array('access content'),
+  );
+        
+  $items['film/%/%/%'] = array(
+      'title' => 'Ting object tree',
+      'page callback' => 'ting_object_tree_show',
+      'page arguments' => array(0, 1, 2, 3),
+      'access arguments' => array('access content'),
+  );
+  
+  $items['artikel/%/%/%'] = array(
+      'title' => 'Ting object tree',
+      'page callback' => 'ting_object_tree_show',
+      'page arguments' => array(0, 1, 2, 3),
+      'access arguments' => array('access content'),
+  );
+  $items['andet/%/%/%'] = array(
+      'title' => 'Ting object tree',
+      'page callback' => 'ting_object_tree_show',
+      'page arguments' => array(0, 1, 2, 3),
+      'access arguments' => array('access content'),
+  );
+  $items['tidsskrift/%/%/%'] = array(
+      'title' => 'Ting object tree',
+      'page callback' => 'ting_object_tree_show',
+      'page arguments' => array(0, 1, 2, 3),
+      'access arguments' => array('access content'),
+  );
+
 
   return $items;
 }
@@ -35,6 +83,7 @@ function ting_object_tree_theme($existing, $type, $theme, $path) {
           'variables' => array(
               'items' => NULL,
               'links' => NULL,
+              'breadcrumb' => NULL,
           ),
           'template' => 'ting-object-tree-page',
           'path' => $path . '/templates',
@@ -61,8 +110,8 @@ function ting_object_tree_show($type, $adult, $fiction, $subject) {
   $size = 50;
    
   $result = ting_object_tree_find_entities_with_covers($query, $start, $size, array());
-
-  return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links']));
+  $breadcrumb = ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject);
+  return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links'], 'breadcrumb' => $breadcrumb));
 }
 
 
@@ -71,22 +120,46 @@ function ting_object_tree_get_query($type, $adult, $fiction, $subject) {
    $query = ting_object_tree_get_type($type);
    if ($adult == 'børn') {
      $query .= ' and facet.category="børnematerialer"';
-   } else {
+   } elseif ($adult != 'alle') {
      $query .= ' and facet.category="voksenmaterialer"';
    }
    if ($fiction == 'fag') {
      $query .= ' and facet.genreCategory="nonfiktion"';
-   } else {
+   } elseif ($fiction != 'alle') {
      $query .= ' and facet.genreCategory="fiktion"';
    }
-   $query .= ' and facet.subject="' . $subject . '"';
-   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj.txt", print_r($query, TRUE), FILE_APPEND);
+   if ($subject != 'alle') {
+      $query .= ' and facet.subject="' . $subject . '"';
+   }
+   
+   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj.txt", print_r($query . "\n", TRUE), FILE_APPEND);
    return $query;
 }
 
-function ting_object_tree_get_type($type) {
-  return 'facet.type="' . $type . '"';
+function ting_object_tree_get_type($type){
+  $types = ting_object_tree_get_material_types();
+  if (array_key_exists($type, $types)) {
+    $query = 'facet.type=("' . implode('" or "', $types[$type]) . '")';
+    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj12.txt", print_r($query, TRUE), FILE_APPEND);
+    return $query;
+  }
+  return '*';
 }
+
+function ting_object_tree_get_material_types(){
+  $types = array (
+     'bog' => array ('bog', 'billedbog', 'tegneserie'),
+     'ebog' => array ('ebog', 'billedbog (net)'),
+     'lydbog' => array ('lydbog (net)', 'lydbog (cd-mp3)', 'lyd (podcast)', 'lydbog (cd)'),
+    'musik' => array ('cd (musik)', 'node', 'grammofonplade'),
+    'film' => array ('film (net)', 'dvd', 'blu-ray', 'film'),
+    'artikel' => array ('artikel', 'netdokument', ),
+    'tidsskrift' => array ('tidsskrift (net)', 'avis (net)', 'tidsskrift', 'periodikum'),
+    
+  );
+  return $types;
+}
+
 
 /**
  * Find ting entities with covers from a query.
@@ -207,29 +280,56 @@ function ting_object_tree_get_subjects($results) {
   return $links;
 }
 
+function ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject) {
+  $links = array();
+  $links[] = l($type, '/' . $type . '/alle/alle/alle');
+  if ($adult != 'alle') {
+    $links[] = l($adult, '/' . $type . '/' . $adult . '/alle/alle');
+  }
+  if ($fiction != 'alle') {
+    $links[] = l($fiction, '/' . $type . '/' . $adult . '/' . $fiction . '/alle');
+  }
+  if ($subject != 'alle') {
+    $links[] = l($subject, '/' . $type . '/' . $adult . '/' . $fiction . '/' . $subject);
+  }
+  $bread_crumb = implode('->', $links);
+   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj17.txt", print_r($bread_crumb, TRUE), FILE_APPEND);
+  return $bread_crumb;
+}
+
 
 function ting_object_tree_get_breadcrumb($object) {
   $ting_object = $object->getTingObject();
   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj5.txt", print_r($ting_object , TRUE), FILE_APPEND);
-  $type = $ting_object->getType();
+  $type = ting_object_tree_get_breadcrumb_type($ting_object);
   $audience = $ting_object->getAudience();
   if (isset($audience) && $audience[0] == 'børnematerialer') {
     $audience = 'børn';
   } else {
     $audience = 'voksen';
   }
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj6.txt", print_r($audience, TRUE), FILE_APPEND);
+
   if ($ting_object->isFiction()) {
     $fiction = 'skøn';
   } else {
     $fiction = 'fag';
   }
   $subject = ting_object_tree_get_subject($ting_object); 
-  $link_text = $type . '->' . $audience . '->' . $fiction . '->' . $subject;
-  $path = '/' . $type . '/' . $audience . '/' . $fiction . '/' . $subject;
-  $bread_crumb = l($link_text, $path);
+
+  $bread_crumb = ting_object_tree_get_tree_breadcrumb($type, $audience, $fiction, $subject);//l($link_text, $path);
    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj7.txt", print_r($bread_crumb, TRUE), FILE_APPEND);
   return $bread_crumb;
+}
+
+function ting_object_tree_get_breadcrumb_type ($object){
+  $type = $object->getType();
+  $types = ting_object_tree_get_material_types();
+  foreach ($types as $key => $material_type) {
+    if (in_array(strtolower($type), $material_type)) {
+      return $key;
+    }
+  }
+  return 'andet';
 }
 
 function ting_object_tree_get_subject($object) {
