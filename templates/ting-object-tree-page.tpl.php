@@ -1,6 +1,11 @@
 <?php ?>
-<div class="frontpage-layout">
-    <div class="panel-pane pane-node-content">
+<div class="ting-object-tree-page">
+    <aside class="secondary-content">
+        <div class="ting-object-tree-menu">
+            <?php print $menu; ?> 
+        </div>
+    </aside>
+    <div class="ting-object-tree-main">
         <div class="ting-object-tree-breadcrumb">
             <?php print $breadcrumb; ?> 
         </div>
