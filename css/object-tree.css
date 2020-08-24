@@ -59,8 +59,13 @@ and open the template in the editor.
         
 }
 
+.ting-object-tree-breadcrumb {
+    margin-bottom: 20px;
+}
+
 .ting-object-tree-links h2 {
     display: block;
+    
 }
 
 .ting-object-tree-page .secondary-content {
@@ -77,4 +82,12 @@ and open the template in the editor.
 
 .ting-object-tree-page ul {
     padding-left: 0px;
+}
+
+.node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .secondary-content {
+    width: 21.6726%;
+}
+
+.node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .primary-content {
+    width: 75.8363%;
 }
