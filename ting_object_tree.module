@@ -307,7 +307,7 @@ function ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject)
   if ($subject != 'alle') {
     $links[] = l(ucfirst($subject), '/' . $type . '/' . $adult . '/' . $fiction . '/' . $subject);
   }
-  $bread_crumb = implode('->', $links);
+  $bread_crumb = implode('<span class="ting-object-tree-breadcrumb-icon"></span>', $links);
    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj17.txt", print_r($bread_crumb, TRUE), FILE_APPEND);
   return $bread_crumb;
 }

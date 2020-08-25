@@ -59,8 +59,24 @@ and open the template in the editor.
         
 }
 
+.ting-object-tree-main h2 {
+    border-bottom: 1px solid rgba(38,38,38,.2);
+} 
+
 .ting-object-tree-breadcrumb {
     margin-bottom: 20px;
+}
+
+
+.ting-object-tree-breadcrumb-icon::after  {
+    content: "\e903";
+    font-family: icomoon;
+    font-size: 8px;
+    padding-right: 10px;
+    padding-left: 10px;
+    top: 4px;
+    position: relative;
+    top: -2px;
 }
 
 .ting-object-tree-links h2 {
@@ -90,4 +106,48 @@ and open the template in the editor.
 
 .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .primary-content {
     width: 75.8363%;
+}
+
+/* Menu */
+
+.ting-object-tree-menu ul.menu li.expanded ul.menu {
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+.ting-object-tree-menu ul.menu li {
+    margin-bottom: 20px;
+}
+
+.ting-object-tree-menu .sub-menu-title {
+    border-bottom: 1px solid rgba(38,38,38,.2);
+    padding-bottom: 25px;
+    font-size: 24px;
+}
+
+.ting-object-tree-menu ul.menu li a.active::after {
+    content: "\e903";
+    font-family: icomoon;
+    font-size: 8px;
+    position: absolute;
+    left:0;
+    display: block;
+    top: -4px;
+}
+
+.ting-object-tree-menu ul.menu li a.active {
+    position: relative;
+    padding-left: 20px;
+}
+
+/* Smart carousel pages */
+
+.node-type-inspiration-carousel h2.pane-title  {
+    border-bottom: 1px solid rgba(38,38,38,.2);
+}
+
+.node-type-inspiration-carousel .pane-ting-smart-carousel-content h2.pane-title  {
+    border-bottom: none;
+    font-size: 28px;
+    line-height: 28px;
 }
