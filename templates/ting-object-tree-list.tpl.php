@@ -1,10 +1,13 @@
 <?php ?>
 
-        <ul class="ting-object-tree">
-            <?php foreach ($items as $item) : ?>
-              <li class="ting-object-tree-item">
-                  <?php print $item; ?> 
-              </li>
+<ul class="ting-object-tree">
+    <?php foreach ($items as $item) : ?>
+      <li class="ting-object-tree-item">
+          <?php print $item; ?> 
+      </li>
 
-            <?php endforeach; ?>
-
+    <?php endforeach; ?>
+</ul>
+<div class="ting-object-tree-pager">
+    <?php print $pager; ?> 
+</div> 

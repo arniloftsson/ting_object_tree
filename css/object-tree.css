@@ -43,7 +43,7 @@ and open the template in the editor.
     background: linear-gradient(rgba(255,138,0,.2),#fff);
     padding-top: 20px;
     padding-bottom: 20px;
-        
+
 }
 
 .ting-object-tree-link {
@@ -56,7 +56,7 @@ and open the template in the editor.
     font-size: 18px;
     color: #006a97;
     text-transform: capitalize;
-        
+
 }
 
 .ting-object-tree-main h2 {
@@ -81,7 +81,7 @@ and open the template in the editor.
 
 .ting-object-tree-links h2 {
     display: block;
-    
+
 }
 
 .ting-object-tree-page .secondary-content {
@@ -151,3 +151,109 @@ and open the template in the editor.
     font-size: 28px;
     line-height: 28px;
 }
+
+/* Mobile categories */
+.ting-object-tree-mobile-categories {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .ting-object-tree-mobile-categories {
+        display: block;
+        margin-top: 32px;
+    }
+
+    .pane-content .ting-object-tree-page .secondary-content {
+        display: none;
+    }
+
+    .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .secondary-content {
+        display: none;
+    }
+
+    .pane-content .ting-object-tree-page .ting-object-tree-main {
+        width: 100%;
+        float: none;
+        margin-top: -20px;
+    }
+
+    .ting-object-tree-mobile-categories .more-link a {
+        float: none;
+        margin-bottom: 15px;
+        display: block;
+        width: 270px;
+    }
+    
+    .ting-object-tree-mobile-categories .more-link a::after {
+        display: block;
+        content: "\e901";
+        color: #ffffff;
+    } 
+
+    .pane-content .ting-object-tree-main  .pane-title {
+        margin-top: 40px;
+        font-size: 40px;
+        color: #006a97;
+    }
+
+    .node-type-inspiration-carousel .primary-content {
+        margin-top: -20px;
+    }
+
+    .node-type-inspiration-carousel .pane-node-content h2.pane-title {
+        margin-top: 40px;
+        font-size: 40px;
+    }
+    
+    .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .primary-content {
+        width: 100%;
+    }
+}
+
+/* Prev and next buttons */
+
+.ting-object-tree-pager .more-link a::after {
+    color: #ffffff;
+}
+
+.ting-object-tree-objects-previous {
+    float:left;
+    margin-right: 30px;
+
+}
+
+.ting-object-tree-pager .ting-object-tree-objects-previous a {
+    padding-left: 80px;
+    padding-right: 15px;
+}
+
+
+.ting-object-tree-pager .more-link {
+    clear: none;
+}
+
+.ting-object-tree-pager .ting-object-tree-objects-previous a::after {
+    display: none;
+}
+
+.ting-object-tree-pager .ting-object-tree-objects-previous a::before{
+    content: "\e902";
+    font-family: icomoon;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    font-size: 54px;
+    display: block;
+    position: absolute;
+    top: 18px;
+    left: 10px;
+}
+
+/* Mobile */
+@media only screen and (max-width: 768px) { 
+    .ting-object-tree-page  .ting-object-tree-item {
+        width: 154px;
+        min-height: 300px;
+    }
+}
+    

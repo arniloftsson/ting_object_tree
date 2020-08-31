@@ -86,6 +86,7 @@ function ting_object_tree_theme($existing, $type, $theme, $path) {
               'breadcrumb' => NULL,
               'menu' => NULL,
               'title' => NULL,
+              'pager' => NULL,
           ),
           'template' => 'ting-object-tree-page',
           'path' => $path . '/templates',
@@ -93,8 +94,16 @@ function ting_object_tree_theme($existing, $type, $theme, $path) {
       'ting_object_tree_list' => array(
           'variables' => array(
               'items' => NULL,
+              'pager' => NULL,
           ),
           'template' => 'ting-object-tree-list',
+          'path' => $path . '/templates',
+      ),
+      'ting_object_tree_mobile_menu' => array(
+          'variables' => array(
+              'menu' => NULL,
+          ),
+          'template' => 'ting-object-tree-mobile-menu',
           'path' => $path . '/templates',
       ),
     
@@ -116,16 +125,22 @@ function ting_object_tree_ctools_plugin_directory($module, $plugin) {
 function ting_object_tree_show($type, $adult, $fiction, $subject) {
 
   $query = ting_object_tree_get_query($type, $adult, $fiction, $subject);
-  $start = 1;
-  $size = 50;
+  $parameters = drupal_get_query_parameters();
+  file_put_contents("/var/www/drupal7vm/drupal/debug/objtree1.txt", print_r($parameters , TRUE), FILE_APPEND);
+  $page = 1;
+  $size = 48;
+  if (isset($parameters['page'])) {
+    $page = $parameters['page'];
+  }
    
-  $result = ting_object_tree_find_entities_with_covers($query, $start, $size, array());
+  $result = ting_object_tree_find_entities_with_covers($query, $page, $size, array());
   $breadcrumb = ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject);
   $menu_links = menu_tree_output(menu_tree_page_data('menu-object-navigation', NULL, TRUE));
   $menu = drupal_render($menu_links);
   $title = ucfirst($subject);
+  drupal_add_js(drupal_get_path('module', 'ting_object_tree') . '/js/object_tree_categories.js', 'file');
    //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj19.txt", print_r($menu_themed , TRUE), FILE_APPEND);
-  return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links'], 'breadcrumb' => $breadcrumb, 'menu' => $menu, 'title' => $title));
+  return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links'], 'breadcrumb' => $breadcrumb, 'menu' => $menu, 'title' => $title, 'pager' => $result['pager']));
 }
 
 
@@ -191,7 +206,7 @@ function ting_object_tree_get_material_types(){
  *   Array of found ting entities (an array), next start to use, and whether
  *   the result end was reached.
  */
-function ting_object_tree_find_entities_with_covers($query, $start, $size, array $ignore) {
+function ting_object_tree_find_entities_with_covers($query, $page, $size, array $ignore) {
   file_put_contents("/var/www/drupal7vm/drupal/debug/newcar2.txt", print_r($query, TRUE), FILE_APPEND);
   $entities_found_with_covers = array();
   $finished = FALSE;
@@ -199,10 +214,10 @@ function ting_object_tree_find_entities_with_covers($query, $start, $size, array
 
   $sal_query = ting_start_query()
           ->withRawQuery($query)
-          ->withFacets(array('facet.subject'))
-          ->withTermsPrFacet(26)
+         // ->withFacets(array('facet.subject'))
+          //->withTermsPrFacet(26)
           ->withSort('date_descending')
-          // ->withPage($page)
+           ->withPage($page)
           ->withCount($size)
           ->withMaterialFilter($ignore, FALSE);
 
@@ -223,20 +238,47 @@ file_put_contents("/var/www/drupal7vm/drupal/debug/newcar3.txt", print_r($result
 file_put_contents("/var/www/drupal7vm/drupal/debug/newobj2.txt", print_r($entities, TRUE), FILE_APPEND);
   // See what materials have covers.
   $covers = ting_covers_get(array_keys($entities));
-
-  // Loop over the fetched covers and build items.
-  foreach ($covers as $id => $path) {
-    $entities_found_with_covers[$id] = $entities[$id];
-  }
+//
+//  // Loop over the fetched covers and build items.
+//  foreach ($covers as $id => $path) {
+//    $entities_found_with_covers[$id] = $entities[$id];
+//  }
   
-  $objects =  ting_object_tree_proces_results($entities_found_with_covers);
+  $objects =  ting_object_tree_proces_results($entities);
   $links = array();//ting_object_tree_get_subjects($results);
+  $pager = ting_object_tree_pager($results);
   $result = array(
           'objects' => $objects,
           'links' => $links,
+          'pager' => $pager,
   );
 
   return $result;
+}
+
+function ting_object_tree_pager($results) {
+  $pager_prev = '';
+  $pager_next = '';
+  $parameters = drupal_get_query_parameters();
+  $path = request_path();
+  $page = 1;
+  
+  if (isset($parameters['page'])) {
+    $page = $parameters['page'];
+  }
+  if ($page > 1) {
+    $prev_page = $page -1;
+    $options = array('query' => array('page' => $prev_page));
+    $link = l('Forrige side',$path, $options);
+    $pager_prev = '<div class="ting-object-tree-objects-previous more-link">' . $link . '</div>';
+  }
+  if ($results->hasMoreResults()) {
+    $next_page = $page + 1;
+    $options = array('query' => array('page' => $next_page));
+    $link = l('Næste side', $path, $options);
+    $pager_next = '<div class="ting-object-tree-objects-next more-link">' . $link . '</div>';
+  }
+  return $pager_prev . $pager_next;
 }
 
 function ting_object_tree_proces_results(array $objects) {
@@ -352,6 +394,7 @@ function ting_object_tree_get_subject($object) {
   $subjects = $object->getSubjects();
   $genre = $object->getGenre();
   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj11.txt", print_r($subjects, TRUE), FILE_APPEND);
+  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj20.txt", print_r($genre, TRUE), FILE_APPEND);
   if (isset($genre) && !empty($genre)) {
     $subject = $genre[0];
     //file_put_contents("/var/www/drupal7vm/drupal/debug/path21.txt", print_r($genre  , TRUE), FILE_APPEND);
