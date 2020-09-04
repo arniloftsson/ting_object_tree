@@ -95,6 +95,7 @@ function ting_object_tree_theme($existing, $type, $theme, $path) {
           'variables' => array(
               'items' => NULL,
               'pager' => NULL,
+              'title' => NULL,
           ),
           'template' => 'ting-object-tree-list',
           'path' => $path . '/templates',
@@ -269,13 +270,13 @@ function ting_object_tree_pager($results) {
   if ($page > 1) {
     $prev_page = $page -1;
     $options = array('query' => array('page' => $prev_page));
-    $link = l('Forrige side',$path, $options);
+    $link = l('Forrige',$path, $options);
     $pager_prev = '<div class="ting-object-tree-objects-previous more-link">' . $link . '</div>';
   }
   if ($results->hasMoreResults()) {
     $next_page = $page + 1;
     $options = array('query' => array('page' => $next_page));
-    $link = l('Næste side', $path, $options);
+    $link = l('Næste', $path, $options);
     $pager_next = '<div class="ting-object-tree-objects-next more-link">' . $link . '</div>';
   }
   return $pager_prev . $pager_next;

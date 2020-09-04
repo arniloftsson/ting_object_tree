@@ -8,7 +8,7 @@ and open the template in the editor.
     Author     : DQ26525
 */
 
-.ting-object-tree-page  .ting-object-tree-item {
+.ting-object-tree-page .ting-object-tree-item, .ting-object-tree .ting-object-tree-item {
     display: inline-block;
     width: 194px;
     margin: auto;
@@ -34,6 +34,7 @@ and open the template in the editor.
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    padding-left: 0px;
 }
 
 .ting-object-tree-links {
@@ -60,6 +61,10 @@ and open the template in the editor.
 }
 
 .ting-object-tree-main h2 {
+    border-bottom: 1px solid rgba(38,38,38,.2);
+} 
+
+.ting-object-tree-item h2 {
     border-bottom: 1px solid rgba(38,38,38,.2);
 } 
 
@@ -152,6 +157,31 @@ and open the template in the editor.
     line-height: 28px;
 }
 
+
+.pane-ting-smart-carousel-objects{
+    margin-top: 17px;
+}
+.pane-ting-smart-carousel-content {
+    padding-left: 10px;
+}
+
+.node-type-inspiration-carousel  .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
+    width: 194px;
+    margin-right: 20px;
+}
+
+.node-type-inspiration-carousel  .ding-carousel-item .field-name-ting-author {
+    font-size: 14px;
+}
+
+.node-type-inspiration-carousel .field-name-ting-title h2  {
+    border-bottom: 1px solid rgba(38,38,38,.2);
+}
+
+.node-type-inspiration-carousel  .pane-carousel .ding-carousel .slick-slider {
+    min-height: 380px;
+}
+
 /* Mobile categories */
 .ting-object-tree-mobile-categories {
     display: none;
@@ -160,7 +190,7 @@ and open the template in the editor.
 @media only screen and (max-width: 768px) {
     .ting-object-tree-mobile-categories {
         display: block;
-        margin-top: 32px;
+        margin-top: 0px;
     }
 
     .pane-content .ting-object-tree-page .secondary-content {
@@ -181,9 +211,9 @@ and open the template in the editor.
         float: none;
         margin-bottom: 15px;
         display: block;
-        width: 270px;
+        width: 100%;
     }
-    
+
     .ting-object-tree-mobile-categories .more-link a::after {
         display: block;
         content: "\e901";
@@ -204,7 +234,7 @@ and open the template in the editor.
         margin-top: 40px;
         font-size: 40px;
     }
-    
+
     .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .primary-content {
         width: 100%;
     }
@@ -245,15 +275,56 @@ and open the template in the editor.
     font-size: 54px;
     display: block;
     position: absolute;
-    top: 18px;
+    top: 17px;
     left: 10px;
 }
 
-/* Mobile */
 @media only screen and (max-width: 768px) { 
-    .ting-object-tree-page  .ting-object-tree-item {
-        width: 154px;
-        min-height: 300px;
+    .ting-object-tree-pager .more-link a {
+        width: 130px;
+        margin-right: 20px;
+    }
+    .ting-object-tree-pager .more-link a::after {
+        display: block;
+    }
+
+    .ting-object-tree-pager .ting-object-tree-objects-previous a::after {
+        display: none;
+    }
+
+    .ting-object-tree-pager .ting-object-tree-objects-previous a {
+        padding-left: 60px;
+    }
+
+    .ting-object-tree-pager .ting-object-tree-objects-previous a::before{
+        left: 0px;
+    }
+
+    .ting-object-tree-pager .more-link a::after {
+        left:70px;
     }
 }
-    
+  
+
+    /* Mobile */
+    @media only screen and (max-width: 768px) { 
+        .ting-object-tree-page  .ting-object-tree-item {
+            width: 154px;
+            min-height: 300px;
+        }
+        .ting-object-tree  .ting-object-tree-item {
+            width: 154px;
+            min-height: 300px;
+        }
+        .node-type-inspiration-carousel  .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
+            width: 154px;
+        }
+        .pane-ting-smart-carousel-content {
+            margin-bottom: 20px;
+        }
+
+        .ting-object-tree-breadcrumb {
+            border-bottom: 1px solid rgba(38,38,38,.2);
+        }
+    }
+
