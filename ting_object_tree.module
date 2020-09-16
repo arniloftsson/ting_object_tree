@@ -220,7 +220,7 @@ function ting_object_tree_find_entities_with_covers($query, $page, $size, array 
           ->withCount($size)
           ->withMaterialFilter($ignore, FALSE);
 
-  $sal_query->reply_only = true;
+  //$sal_query->reply_only = true;
   $results = $sal_query->execute();
 //file_put_contents("/var/www/drupal7vm/drupal/debug/newcar3.txt", print_r($results , TRUE), FILE_APPEND);
   if (!$results->hasMoreResults()) {
