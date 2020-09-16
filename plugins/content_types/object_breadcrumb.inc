@@ -21,7 +21,6 @@ $plugin = array(
  */
 function ting_object_tree_object_breadcrumb_content_type_render($subtype, $conf, $panel_args, $context) {
   $object = isset($context->data) ? ($context->data) : NULL;
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj4.txt", print_r($object, TRUE), FILE_APPEND);
   // Build the content type block.
   $content = ting_object_tree_get_breadcrumb($object);
   $block = new stdClass();

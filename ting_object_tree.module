@@ -127,7 +127,7 @@ function ting_object_tree_show($type, $adult, $fiction, $subject) {
 
   $query = ting_object_tree_get_query($type, $adult, $fiction, $subject);
   $parameters = drupal_get_query_parameters();
-  file_put_contents("/var/www/drupal7vm/drupal/debug/objtree1.txt", print_r($parameters , TRUE), FILE_APPEND);
+
   $page = 1;
   $size = 48;
   if (isset($parameters['page'])) {
@@ -162,7 +162,7 @@ function ting_object_tree_get_query($type, $adult, $fiction, $subject) {
       $query .= ' and facet.subject="' . $subject . '"';
    }
    
-   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj.txt", print_r($query . "\n", TRUE), FILE_APPEND);
+   //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj.txt", print_r($query . "\n", TRUE), FILE_APPEND);
    return $query;
 }
 
@@ -170,7 +170,6 @@ function ting_object_tree_get_type($type){
   $types = ting_object_tree_get_material_types();
   if (array_key_exists($type, $types)) {
     $query = 'facet.type=("' . implode('" or "', $types[$type]) . '")';
-    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj12.txt", print_r($query, TRUE), FILE_APPEND);
     return $query;
   }
   return '*';
@@ -208,7 +207,6 @@ function ting_object_tree_get_material_types(){
  *   the result end was reached.
  */
 function ting_object_tree_find_entities_with_covers($query, $page, $size, array $ignore) {
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newcar2.txt", print_r($query, TRUE), FILE_APPEND);
   $entities_found_with_covers = array();
   $finished = FALSE;
   $entities = array();
@@ -224,7 +222,7 @@ function ting_object_tree_find_entities_with_covers($query, $page, $size, array 
 
   $sal_query->reply_only = true;
   $results = $sal_query->execute();
-file_put_contents("/var/www/drupal7vm/drupal/debug/newcar3.txt", print_r($results , TRUE), FILE_APPEND);
+//file_put_contents("/var/www/drupal7vm/drupal/debug/newcar3.txt", print_r($results , TRUE), FILE_APPEND);
   if (!$results->hasMoreResults()) {
     $finished = TRUE;
   }
@@ -236,14 +234,9 @@ file_put_contents("/var/www/drupal7vm/drupal/debug/newcar3.txt", print_r($result
     $object = $collection->getPrimary_object();
     $entities[$object->getId()] = $object;
   }
-file_put_contents("/var/www/drupal7vm/drupal/debug/newobj2.txt", print_r($entities, TRUE), FILE_APPEND);
+//file_put_contents("/var/www/drupal7vm/drupal/debug/newobj2.txt", print_r($entities, TRUE), FILE_APPEND);
   // See what materials have covers.
   $covers = ting_covers_get(array_keys($entities));
-//
-//  // Loop over the fetched covers and build items.
-//  foreach ($covers as $id => $path) {
-//    $entities_found_with_covers[$id] = $entities[$id];
-//  }
   
   $objects =  ting_object_tree_proces_results($entities);
   $links = array();//ting_object_tree_get_subjects($results);
@@ -334,7 +327,6 @@ function ting_object_tree_get_subjects($results) {
       $links[] = l($term->getName() . ' (' . $term->getCount() . ')', $path . '/' . $term->getName());
     }
   }
-  file_put_contents("/var/www/drupal7vm/drupal/debug/obj12.txt", print_r($facets, TRUE), FILE_APPEND);
   return $links;
 }
 
@@ -351,14 +343,12 @@ function ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject)
     $links[] = l(ucfirst($subject), '/' . $type . '/' . $adult . '/' . $fiction . '/' . $subject);
   }
   $bread_crumb = implode('<span class="ting-object-tree-breadcrumb-icon"></span>', $links);
-   file_put_contents("/var/www/drupal7vm/drupal/debug/newobj17.txt", print_r($bread_crumb, TRUE), FILE_APPEND);
   return $bread_crumb;
 }
 
 
 function ting_object_tree_get_breadcrumb($object) {
   $ting_object = $object->getTingObject();
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj5.txt", print_r($ting_object , TRUE), FILE_APPEND);
   $type = ting_object_tree_get_breadcrumb_type($ting_object);
   $audience = $ting_object->getAudience();
   if (isset($audience) && $audience[0] == 'børnematerialer') {
@@ -394,8 +384,7 @@ function ting_object_tree_get_subject($object) {
   $subject = null;
   $subjects = $object->getSubjects();
   $genre = $object->getGenre();
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj11.txt", print_r($subjects, TRUE), FILE_APPEND);
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj20.txt", print_r($genre, TRUE), FILE_APPEND);
+
   if (isset($genre) && !empty($genre)) {
     $subject = $genre[0];
     //file_put_contents("/var/www/drupal7vm/drupal/debug/path21.txt", print_r($genre  , TRUE), FILE_APPEND);
@@ -412,14 +401,13 @@ function ting_object_tree_choose_subject($subjects) {
   $subject_list = variable_get('ting_object_tree_subject_list');
   if (!(isset($subject_list))) {
     $module_path = drupal_get_path('module', 'ting_object_tree');
-    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj9.txt", print_r('/' . $module_path . '/data/serialized_subjects.txt', TRUE), FILE_APPEND);
     $data = file_get_contents($module_path . '/data/serialized_subjects.txt');
     if (isset($data)) {
       $subject_list = unserialize($data);
     }
     variable_set('ting_object_tree_subject_list', $subject_list);
   }
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj11.txt", print_r($subjects, TRUE), FILE_APPEND);
+
   $subject_on_list = array();
   foreach ($subjects as $subject) {
      if (array_key_exists($subject, $subject_list)) {
@@ -428,14 +416,13 @@ function ting_object_tree_choose_subject($subjects) {
   }
   if (!(empty($subject_on_list))) {
     arsort($subject_on_list);
-    file_put_contents("/var/www/drupal7vm/drupal/debug/newobj10.txt", print_r($subject_on_list, TRUE), FILE_APPEND);
     $keys = array_keys($subject_on_list);
     return $keys[0] ;
   } else {
     return $subjects[0];
   }
 
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newobj8.txt", print_r($subject_list, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj8.txt", print_r($subject_list, TRUE), FILE_APPEND);
 }
 
 
@@ -450,7 +437,6 @@ function ting_object_tree_get_current_path() {
   $elements['audience'] = $path_elements[1];
   $elements['fiction'] = $path_elements[2];
   $elements['subject'] = $path_elements[3];
-  file_put_contents("/var/www/drupal7vm/drupal/debug/newcar10.txt", print_r($elements, TRUE), FILE_APPEND);
 
   return $elements;
 }
