@@ -4,110 +4,120 @@
  * @file
  * Ting smart carousel module main file.
  */
+
 use OpenSearch\OpenSearchTingObjectCollection;
 
 
-function ting_object_tree_menu() {
+function ting_object_tree_menu()
+{
   $items = array();
 
+  $items['alle/%/%/%'] = array(
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
+  );
+
   $items['bog/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
-  
+
   $items['ebog/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
-    
+
   $items['lydbog/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
-      
+
   $items['musik/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
-        
+
   $items['film/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
-  
+
   $items['artikel/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
   $items['andet/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
   $items['tidsskrift/%/%/%'] = array(
-      'title' => 'Ting object tree',
-      'page callback' => 'ting_object_tree_show',
-      'page arguments' => array(0, 1, 2, 3),
-      'access arguments' => array('access content'),
+    'title' => 'Ting object tree',
+    'page callback' => 'ting_object_tree_show',
+    'page arguments' => array(0, 1, 2, 3),
+    'access arguments' => array('access content'),
   );
 
 
   return $items;
 }
 
-function ting_object_tree_theme($existing, $type, $theme, $path) {
+function ting_object_tree_theme($existing, $type, $theme, $path)
+{
   return array(
-      'ting_object_tree_item' => array(
-          'variables' => array(
-              'title' => NULL,
-              'creators' => NULL,
-              'cover' => NULL,
-          ),
-          'template' => 'ting-object-tree-item',
-          'path' => $path . '/templates',
+    'ting_object_tree_item' => array(
+      'variables' => array(
+        'title' => NULL,
+        'creators' => NULL,
+        'cover' => NULL,
       ),
-      'ting_object_tree_page' => array(
-          'variables' => array(
-              'items' => NULL,
-              'links' => NULL,
-              'breadcrumb' => NULL,
-              'menu' => NULL,
-              'title' => NULL,
-              'pager' => NULL,
-          ),
-          'template' => 'ting-object-tree-page',
-          'path' => $path . '/templates',
+      'template' => 'ting-object-tree-item',
+      'path' => $path . '/templates',
+    ),
+    'ting_object_tree_page' => array(
+      'variables' => array(
+        'items' => NULL,
+        'links' => NULL,
+        'breadcrumb' => NULL,
+        'menu' => NULL,
+        'title' => NULL,
+        'pager' => NULL,
       ),
-      'ting_object_tree_list' => array(
-          'variables' => array(
-              'items' => NULL,
-              'pager' => NULL,
-              'title' => NULL,
-          ),
-          'template' => 'ting-object-tree-list',
-          'path' => $path . '/templates',
+      'template' => 'ting-object-tree-page',
+      'path' => $path . '/templates',
+    ),
+    'ting_object_tree_list' => array(
+      'variables' => array(
+        'items' => NULL,
+        'pager' => NULL,
+        'title' => NULL,
       ),
-      'ting_object_tree_mobile_menu' => array(
-          'variables' => array(
-              'menu' => NULL,
-          ),
-          'template' => 'ting-object-tree-mobile-menu',
-          'path' => $path . '/templates',
+      'template' => 'ting-object-tree-list',
+      'path' => $path . '/templates',
+    ),
+    'ting_object_tree_mobile_menu' => array(
+      'variables' => array(
+        'menu' => NULL,
       ),
-    
+      'template' => 'ting-object-tree-mobile-menu',
+      'path' => $path . '/templates',
+    ),
+
   );
 }
 
@@ -117,56 +127,122 @@ function ting_object_tree_theme($existing, $type, $theme, $path) {
  * It simply tells panels where to find the .inc files that define various
  * args, contexts, content_types.
  */
-function ting_object_tree_ctools_plugin_directory($module, $plugin) {
+function ting_object_tree_ctools_plugin_directory($module, $plugin)
+{
   if ($module == 'ctools' && !empty($plugin)) {
     return "plugins/$plugin";
   }
 }
 
-function ting_object_tree_show($type, $adult, $fiction, $subject) {
-
-  $query = ting_object_tree_get_query($type, $adult, $fiction, $subject);
+function ting_object_tree_show($type, $adult, $fiction, $subject)
+{
   $parameters = drupal_get_query_parameters();
+  $key = 'alle';
+  if (isset($parameters['searchquery'])) {
+    $key = $parameters['searchquery'];
+  }
 
+  $query = ting_object_tree_get_query($type, $adult, $fiction, $subject, $key);
+
+  //file_put_contents("/var/www/drupalvm/drupal/web/debug/search8.txt", print_r($query, TRUE), FILE_APPEND);
   $page = 1;
   $size = 48;
   if (isset($parameters['page'])) {
     $page = $parameters['page'];
   }
-   
+
   $result = ting_object_tree_find_entities_with_covers($query, $page, $size, array());
   $breadcrumb = ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject);
-  $menu_links = menu_tree_output(menu_tree_page_data('menu-object-navigation', NULL, TRUE));
+  $menu_links = ting_object_tree_get_menu_links($key);
   $menu = drupal_render($menu_links);
   $title = ucfirst($subject);
   drupal_add_js(drupal_get_path('module', 'ting_object_tree') . '/js/object_tree_categories.js', 'file');
-   //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj19.txt", print_r($menu_themed , TRUE), FILE_APPEND);
+  
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search10.txt", print_r($menu_links, TRUE), FILE_APPEND);
   return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links'], 'breadcrumb' => $breadcrumb, 'menu' => $menu, 'title' => $title, 'pager' => $result['pager']));
 }
 
-
-
-function ting_object_tree_get_query($type, $adult, $fiction, $subject) {
-   $query = ting_object_tree_get_type($type);
-   if ($adult == 'børn') {
-     $query .= ' and facet.category="børnematerialer"';
-   } elseif ($adult != 'alle') {
-     $query .= ' and facet.category="voksenmaterialer"';
-   }
-   if ($fiction == 'fag') {
-     $query .= ' and facet.genreCategory="nonfiktion"';
-   } elseif ($fiction != 'alle') {
-     $query .= ' and facet.genreCategory="fiktion"';
-   }
-   if ($subject != 'alle') {
-      $query .= ' and facet.subject="' . $subject . '"';
-   }
-   
-   //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj.txt", print_r($query . "\n", TRUE), FILE_APPEND);
-   return $query;
+function ting_object_tree_get_menu_links($key)
+{
+  $menu_data = menu_tree_page_data('menu-menu-object-navigation', NULL, TRUE);
+  if ($key != 'alle') {
+    $data = array();
+    foreach ($menu_data as $menu_item) {
+      $data[] = ting_object_tree_handle_menu_link($menu_item, $key);
+    }
+    $menu_data = $data;
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search1.txt", print_r($menu_data, TRUE), FILE_APPEND);
+  return  menu_tree_output($menu_data);
 }
 
-function ting_object_tree_get_type($type){
+function ting_object_tree_handle_menu_link($menu_item, $key)
+{
+  $menu_item['link']['options']['query'] = array('searchquery' => $key);
+  $menu_item['link']['localized_options']['query'] = array('searchquery' => $key);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search12.txt", print_r($menu_item , TRUE), FILE_APPEND);
+  if (!empty($menu_item['below'])) {
+    $data = array();
+    foreach ($menu_item['below'] as $menu_item_below) {
+      $data[] = ting_object_tree_handle_menu_link($menu_item_below, $key);
+    }
+    $menu_item['below'] = $data;
+  }
+  return $menu_item;
+}
+
+function ting_object_tree_is_on_path()
+{
+  $items = ting_object_tree_menu();
+  $keys = array_keys($items);
+  $path = current_path();
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search4.txt", print_r($path, TRUE), FILE_APPEND);
+  foreach ($keys as $key) {
+    $parts = explode('/', $key);
+    if (substr_compare($path, $parts[0], 0, strlen($parts[0])) === 0) {
+      file_put_contents("/var/www/drupalvm/drupal/web/debug/search5.txt", print_r($key, TRUE), FILE_APPEND);
+      return true;
+    }
+  }
+  return false;
+}
+
+function ting_object_tree_get_path()
+{
+  if (isset($_GET['currentpage'])) {
+    return $_GET['currentpage'];
+  } else {
+    return 'alle/alle/alle/alle';
+  }
+}
+
+function ting_object_tree_get_query($type, $adult, $fiction, $subject, $key)
+{
+  $query = ting_object_tree_get_type($type);
+  if ($adult == 'børn') {
+    $query .= ' and facet.category="børnematerialer"';
+  } elseif ($adult != 'alle') {
+    $query .= ' and facet.category="voksenmaterialer"';
+  }
+  if ($fiction == 'fag') {
+    $query .= ' and facet.genreCategory="nonfiktion"';
+  } elseif ($fiction != 'alle') {
+    $query .= ' and facet.genreCategory="fiktion"';
+  }
+  if ($subject != 'alle') {
+    $query .= ' and facet.subject="' . $subject . '"';
+  }
+
+  if ($key != 'alle') {
+    $query .= ' and ' . $key;
+  }
+
+  //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj.txt", print_r($query . "\n", TRUE), FILE_APPEND);
+  return $query;
+}
+
+function ting_object_tree_get_type($type)
+{
   $types = ting_object_tree_get_material_types();
   if (array_key_exists($type, $types)) {
     $query = 'facet.type=("' . implode('" or "', $types[$type]) . '")';
@@ -175,16 +251,17 @@ function ting_object_tree_get_type($type){
   return '*';
 }
 
-function ting_object_tree_get_material_types(){
-  $types = array (
-     'bog' => array ('bog', 'billedbog', 'tegneserie'),
-     'ebog' => array ('ebog', 'billedbog (net)'),
-     'lydbog' => array ('lydbog (net)', 'lydbog (cd-mp3)', 'lyd (podcast)', 'lydbog (cd)'),
-    'musik' => array ('cd (musik)', 'node', 'grammofonplade'),
-    'film' => array ('film (net)', 'dvd', 'blu-ray', 'film'),
-    'artikel' => array ('artikel', 'netdokument', ),
-    'tidsskrift' => array ('tidsskrift (net)', 'avis (net)', 'tidsskrift', 'periodikum'),
-    
+function ting_object_tree_get_material_types()
+{
+  $types = array(
+    'bog' => array('bog', 'billedbog', 'tegneserie'),
+    'ebog' => array('ebog', 'billedbog (net)'),
+    'lydbog' => array('lydbog (net)', 'lydbog (cd-mp3)', 'lyd (podcast)', 'lydbog (cd)'),
+    'musik' => array('cd (musik)', 'node', 'grammofonplade'),
+    'film' => array('film (net)', 'dvd', 'blu-ray', 'film'),
+    'artikel' => array('artikel', 'netdokument',),
+    'tidsskrift' => array('tidsskrift (net)', 'avis (net)', 'tidsskrift', 'periodikum'),
+
   );
   return $types;
 }
@@ -206,64 +283,66 @@ function ting_object_tree_get_material_types(){
  *   Array of found ting entities (an array), next start to use, and whether
  *   the result end was reached.
  */
-function ting_object_tree_find_entities_with_covers($query, $page, $size, array $ignore) {
+function ting_object_tree_find_entities_with_covers($query, $page, $size, array $ignore)
+{
   $entities_found_with_covers = array();
   $finished = FALSE;
   $entities = array();
 
   $sal_query = ting_start_query()
-          ->withRawQuery($query)
-         // ->withFacets(array('facet.subject'))
-          //->withTermsPrFacet(26)
-          ->withSort('date_descending')
-           ->withPage($page)
-          ->withCount($size)
-          ->withMaterialFilter($ignore, FALSE);
+    ->withRawQuery($query)
+    // ->withFacets(array('facet.subject'))
+    //->withTermsPrFacet(26)
+    ->withSort('date_descending')
+    ->withPage($page)
+    ->withCount($size)
+    ->withMaterialFilter($ignore, FALSE);
 
   //$sal_query->reply_only = true;
   $results = $sal_query->execute();
-//file_put_contents("/var/www/drupal7vm/drupal/debug/newcar3.txt", print_r($results , TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupal7vm/drupal/debug/newcar3.txt", print_r($results , TRUE), FILE_APPEND);
   if (!$results->hasMoreResults()) {
     $finished = TRUE;
   }
   $collections = $results->getTingEntityCollections();
 
-  
- $collections = $results->getTingEntityCollections();
+
+  $collections = $results->getTingEntityCollections();
   foreach ($results->openSearchResult->collections as $collection) {
     $object = $collection->getPrimary_object();
     $entities[$object->getId()] = $object;
   }
-//file_put_contents("/var/www/drupal7vm/drupal/debug/newobj2.txt", print_r($entities, TRUE), FILE_APPEND);
+  //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj2.txt", print_r($entities, TRUE), FILE_APPEND);
   // See what materials have covers.
   $covers = ting_covers_get(array_keys($entities));
-  
+
   $objects =  ting_object_tree_proces_results($entities);
-  $links = array();//ting_object_tree_get_subjects($results);
+  $links = array(); //ting_object_tree_get_subjects($results);
   $pager = ting_object_tree_pager($results);
   $result = array(
-          'objects' => $objects,
-          'links' => $links,
-          'pager' => $pager,
+    'objects' => $objects,
+    'links' => $links,
+    'pager' => $pager,
   );
 
   return $result;
 }
 
-function ting_object_tree_pager($results) {
+function ting_object_tree_pager($results)
+{
   $pager_prev = '';
   $pager_next = '';
   $parameters = drupal_get_query_parameters();
   $path = request_path();
   $page = 1;
-  
+
   if (isset($parameters['page'])) {
     $page = $parameters['page'];
   }
   if ($page > 1) {
-    $prev_page = $page -1;
+    $prev_page = $page - 1;
     $options = array('query' => array('page' => $prev_page));
-    $link = l('Forrige',$path, $options);
+    $link = l('Forrige', $path, $options);
     $pager_prev = '<div class="ting-object-tree-objects-previous more-link">' . $link . '</div>';
   }
   if ($results->hasMoreResults()) {
@@ -275,35 +354,38 @@ function ting_object_tree_pager($results) {
   return $pager_prev . $pager_next;
 }
 
-function ting_object_tree_proces_results(array $objects) {
+function ting_object_tree_proces_results(array $objects)
+{
   $items = array();
   foreach ($objects as $object) {
-  $cover = ting_object_tree_get_cover($object);
-  $creators = ting_object_tree_get_creators($object);
-  $items[] = theme ('ting_object_tree_item', array('title' => $object->getTingObject()->getShortTitle(), 'creators' => $creators, 'cover' => $cover,));
+    $cover = ting_object_tree_get_cover($object);
+    $creators = ting_object_tree_get_creators($object);
+    $items[] = theme('ting_object_tree_item', array('title' => $object->getTingObject()->getShortTitle(), 'creators' => $creators, 'cover' => $cover,));
   }
   return $items;
 }
 
-function ting_object_tree_get_cover($object) {
+function ting_object_tree_get_cover($object)
+{
   $image = theme('ting_object_cover', array('elements' => array('#object' => $object, '#image_style' => 'ding_list_medium')));
   $options = array(
-      'html' => TRUE,
-      'attributes' => array('title' => $object->getTitle()),
+    'html' => TRUE,
+    'attributes' => array('title' => $object->getTitle()),
   );
   return l($image, ting_object_tree_uri($object), $options);
 }
-function ting_object_tree_get_creators($object) {
+function ting_object_tree_get_creators($object)
+{
   if (count($object->getCreators())) {
-    if ($object->getDate()!= '') {
+    if ($object->getDate() != '') {
       $markup_string = t('By !author_link (@year)', array(
-          '!author_link' => implode(', ', $object->getCreators()),
-          // So wrong, but appears to be the way the data is.
-          '@year' => $object->getDate(),
+        '!author_link' => implode(', ', $object->getCreators()),
+        // So wrong, but appears to be the way the data is.
+        '@year' => $object->getDate(),
       ));
     } else {
       $markup_string = t('By !author_link', array(
-          '!author_link' => implode(', ', $object->getCreators()),
+        '!author_link' => implode(', ', $object->getCreators()),
       ));
     }
   } elseif ($object->getDate() != '') {
@@ -312,17 +394,19 @@ function ting_object_tree_get_creators($object) {
   return $markup_string;
 }
 
-function ting_object_tree_uri($object) {
+function ting_object_tree_uri($object)
+{
   return 'ting/collection/' . $object->id;
 }
 
-function ting_object_tree_get_subjects($results) {
+function ting_object_tree_get_subjects($results)
+{
   $facets = $results->getFacets();
   $path = request_path();
   $path_elements = explode('/', $path);
   $current = end($path_elements);
   $links = array();
-  foreach ($facets['facet.subject']->getTerms() as $term ) {
+  foreach ($facets['facet.subject']->getTerms() as $term) {
     if ($term->getName() != $current) {
       $links[] = l($term->getName() . ' (' . $term->getCount() . ')', $path . '/' . $term->getName());
     }
@@ -330,7 +414,8 @@ function ting_object_tree_get_subjects($results) {
   return $links;
 }
 
-function ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject) {
+function ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject)
+{
   $links = array();
   $links[] = l(ucfirst($type), '/' . $type . '/alle/alle/alle');
   if ($adult != 'alle') {
@@ -347,7 +432,8 @@ function ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject)
 }
 
 
-function ting_object_tree_get_breadcrumb($object) {
+function ting_object_tree_get_breadcrumb($object)
+{
   $ting_object = $object->getTingObject();
   $type = ting_object_tree_get_breadcrumb_type($ting_object);
   $audience = $ting_object->getAudience();
@@ -362,14 +448,15 @@ function ting_object_tree_get_breadcrumb($object) {
   } else {
     $fiction = 'fag';
   }
-  $subject = ting_object_tree_get_subject($ting_object); 
+  $subject = ting_object_tree_get_subject($ting_object);
 
-  $bread_crumb = ting_object_tree_get_tree_breadcrumb($type, $audience, $fiction, $subject);//l($link_text, $path);
+  $bread_crumb = ting_object_tree_get_tree_breadcrumb($type, $audience, $fiction, $subject); //l($link_text, $path);
 
   return $bread_crumb;
 }
 
-function ting_object_tree_get_breadcrumb_type ($object){
+function ting_object_tree_get_breadcrumb_type($object)
+{
   $type = $object->getType();
   $types = ting_object_tree_get_material_types();
   foreach ($types as $key => $material_type) {
@@ -380,7 +467,8 @@ function ting_object_tree_get_breadcrumb_type ($object){
   return 'andet';
 }
 
-function ting_object_tree_get_subject($object) {
+function ting_object_tree_get_subject($object)
+{
   $subject = null;
   $subjects = $object->getSubjects();
   $genre = $object->getGenre();
@@ -389,7 +477,7 @@ function ting_object_tree_get_subject($object) {
     $subject = $genre[0];
     //file_put_contents("/var/www/drupal7vm/drupal/debug/path21.txt", print_r($genre  , TRUE), FILE_APPEND);
   } elseif (isset($subjects) && !empty($subjects)) {
-    $subject = ting_object_tree_choose_subject($subjects) ;
+    $subject = ting_object_tree_choose_subject($subjects);
   } else {
     $subject = 'ingetemne';
   }
@@ -397,7 +485,8 @@ function ting_object_tree_get_subject($object) {
   return $subject;
 }
 
-function ting_object_tree_choose_subject($subjects) {
+function ting_object_tree_choose_subject($subjects)
+{
   $subject_list = variable_get('ting_object_tree_subject_list');
   if (!(isset($subject_list))) {
     $module_path = drupal_get_path('module', 'ting_object_tree');
@@ -410,14 +499,14 @@ function ting_object_tree_choose_subject($subjects) {
 
   $subject_on_list = array();
   foreach ($subjects as $subject) {
-     if (array_key_exists($subject, $subject_list)) {
-       $subject_on_list[$subject] = $subject_list[$subject];
-     }
+    if (array_key_exists($subject, $subject_list)) {
+      $subject_on_list[$subject] = $subject_list[$subject];
+    }
   }
   if (!(empty($subject_on_list))) {
     arsort($subject_on_list);
     $keys = array_keys($subject_on_list);
-    return $keys[0] ;
+    return $keys[0];
   } else {
     return $subjects[0];
   }
@@ -426,7 +515,8 @@ function ting_object_tree_choose_subject($subjects) {
 }
 
 
-function ting_object_tree_get_current_path() {
+function ting_object_tree_get_current_path()
+{
   $elements = array();
   $path = request_path();
   $path_elements = explode('/', $path);
@@ -450,7 +540,8 @@ function ting_object_tree_get_current_path() {
  * @return array
  *   Array of id => file path for found covers.
  */
-function ting_object_tree_covers_get(array $requested_covers) {
+function ting_object_tree_covers_get(array $requested_covers)
+{
   $entities = array();
   $covers = array();
 
