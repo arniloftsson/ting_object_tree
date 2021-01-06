@@ -73,6 +73,12 @@ function ting_object_tree_menu()
     'access arguments' => array('access content'),
   );
 
+  $items['ting/objecttreesearch'] = array(
+    'title' => 'Retreives count of search results for activated items',
+    'page callback' => 'ting_object_tree_search_count',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }
@@ -154,39 +160,51 @@ function ting_object_tree_show($type, $adult, $fiction, $subject)
   $result = ting_object_tree_find_entities_with_covers($query, $page, $size, array());
   $breadcrumb = ting_object_tree_get_tree_breadcrumb($type, $adult, $fiction, $subject);
   $menu_links = ting_object_tree_get_menu_links($key);
+
+  // $menu_links[1346]['#attributes']['class'] = 'test';
+  // $menu_links[1346]['#localized_options']['query'] = array('searchquery' => 'venus');
   $menu = drupal_render($menu_links);
   $title = ucfirst($subject);
   drupal_add_js(drupal_get_path('module', 'ting_object_tree') . '/js/object_tree_categories.js', 'file');
-  
+
   file_put_contents("/var/www/drupalvm/drupal/web/debug/search10.txt", print_r($menu_links, TRUE), FILE_APPEND);
   return theme('ting_object_tree_page', array('items' => $result['objects'], 'links' =>  $result['links'], 'breadcrumb' => $breadcrumb, 'menu' => $menu, 'title' => $title, 'pager' => $result['pager']));
 }
 
 function ting_object_tree_get_menu_links($key)
 {
+  $active_menu_items = array();
   $menu_data = menu_tree_page_data('menu-menu-object-navigation', NULL, TRUE);
-  if ($key != 'alle') {
-    $data = array();
-    foreach ($menu_data as $menu_item) {
-      $data[] = ting_object_tree_handle_menu_link($menu_item, $key);
+  $menu_links = menu_tree_output($menu_data);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search15.txt", print_r($menu_links, TRUE), FILE_APPEND);
+
+  foreach ($menu_links as $menu_key => $menu_item) {
+    if (!(substr_compare($menu_key, '#', 0, strlen('#')) === 0)) {
+      $menu_links[$menu_key] = ting_object_tree_handle_menu_link($menu_item, $key, $menu_key, $active_menu_items);
     }
-    $menu_data = $data;
   }
+  drupal_add_js(drupal_get_path('module', 'ting_object_tree') . '/js/ting-object-tree.js');
+  drupal_add_js(array('tingObjectTreeSearch' => array('active' => $active_menu_items)), 'setting');
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search17.txt", print_r($active_menu_items, TRUE), FILE_APPEND);
   file_put_contents("/var/www/drupalvm/drupal/web/debug/search1.txt", print_r($menu_data, TRUE), FILE_APPEND);
-  return  menu_tree_output($menu_data);
+  return $menu_links;
 }
 
-function ting_object_tree_handle_menu_link($menu_item, $key)
+function ting_object_tree_handle_menu_link($menu_item, $key, $menu_key, &$active_menu_items)
 {
-  $menu_item['link']['options']['query'] = array('searchquery' => $key);
-  $menu_item['link']['localized_options']['query'] = array('searchquery' => $key);
-  file_put_contents("/var/www/drupalvm/drupal/web/debug/search12.txt", print_r($menu_item , TRUE), FILE_APPEND);
-  if (!empty($menu_item['below'])) {
-    $data = array();
-    foreach ($menu_item['below'] as $menu_item_below) {
-      $data[] = ting_object_tree_handle_menu_link($menu_item_below, $key);
+  if ($key != 'alle') {
+    $menu_item['#localized_options']['query'] = array('searchquery' => $key);
+  }
+  $menu_item['#attributes']['id'] = 'search-menu-' . $menu_key;
+  $active_menu_items[$menu_key] = array('href' => $menu_item['#href'], 'searchquery' => $key);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search12.txt", print_r($menu_item, TRUE), FILE_APPEND);
+  if (!empty($menu_item['#below'])) {
+    file_put_contents("/var/www/drupalvm/drupal/web/debug/search16.txt", print_r($menu_item['#below'], TRUE), FILE_APPEND);
+    foreach ($menu_item['#below'] as $menu_key =>  $menu_item_below) {
+      if (!(substr_compare($menu_key, '#', 0, strlen('#')) === 0)) {
+        $menu_item['#below'][$menu_key]  = ting_object_tree_handle_menu_link($menu_item_below, $key, $menu_key, $active_menu_items);
+      }
     }
-    $menu_item['below'] = $data;
   }
   return $menu_item;
 }
@@ -585,4 +603,68 @@ function ting_object_tree_covers_get(array $requested_covers)
   }
 
   return $covers;
+}
+
+function ting_object_tree_search_count()
+{
+  //$results = ting_expansion_search_multi($query);
+  $queries = array();
+  $active_items = $_POST;
+  if (isset($active_items) && !empty($active_items)) {
+    foreach ($active_items as $key => $item) {
+      $queries[] = array(
+        'query' => ting_object_tree_get_active_query($item['href'], $item['searchquery']),
+        'key' => $key,
+
+      );
+    }
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search20.txt", print_r($_POST, TRUE), FILE_APPEND);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search21.txt", print_r($queries, TRUE), FILE_APPEND);
+  $results = ting_object_tree_search_multi($queries);
+  return drupal_json_output($results);
+}
+
+function ting_object_tree_get_active_query($url, $search_query)
+{
+  if (isset($url)) {
+    $parts = explode('/', $url);
+    return ting_object_tree_get_query($parts[0], $parts[1], $parts[2], $parts[3], $search_query);
+  }
+  return '';
+}
+
+function ting_object_tree_search_multi($queries)
+{
+  $multi_request = new TingClientMultiRequestAdapter();
+  $req = array();
+  $profiles = array('min', 'ebog', 'digart',  'digfag');
+
+  foreach ($queries as $query) {
+    $request = opensearch_get_request_factory()->getSearchRequest();
+
+    $request->setQuery($query['query'] . ' and holdingsitem.agencyid=' . variable_get('ting_agency', '773000'));
+    if ($agency = variable_get('ting_agency', FALSE)) {
+      $request->setAgency($agency);
+    }
+    $request->setStart(1);
+    $request->setNumResults(0);
+
+    $request->setProfile('opac');
+    $req[] = $request;
+  }
+
+  $results = $multi_request->execute($req);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/multi1.txt", print_r($results, TRUE), FILE_APPEND);
+
+  $res = array();
+  $i = 0;
+  foreach ($results as $result) {
+    $response = $req[$i]->parseResponse($result);
+    $key = 'search-menu-' . $queries[$i]['key'];
+    $res[$key] = $response->numTotalObjects; //The search result come back in the same order as the requests.
+    $i++;
+  }
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/multi2.txt", print_r($res, TRUE), FILE_APPEND);
+  return $res;
 }
