@@ -349,7 +349,7 @@ function ting_object_tree_find_entities_with_covers($query, $page, $size, array 
   return $result;
 }
 
-//test2 3
+//test2 3 5
 
 function ting_object_tree_set_covers_first($covers, $entities) {
   $not_cover = array();
