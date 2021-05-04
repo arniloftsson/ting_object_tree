@@ -150,7 +150,7 @@ function ting_object_tree_show($type, $adult, $fiction, $subject)
 
   $query = ting_object_tree_get_query($type, $adult, $fiction, $subject, $key);
 
-  //file_put_contents("/var/www/drupalvm/drupal/web/debug/search8.txt", print_r($query, TRUE), FILE_APPEND);
+  file_put_contents("/var/www/drupalvm/drupal/web/debug/search22.txt", print_r($query, TRUE), FILE_APPEND);
   $page = 1;
   $size = 48;
   if (isset($parameters['page'])) {
@@ -308,10 +308,10 @@ function ting_object_tree_find_entities_with_covers($query, $page, $size, array 
   $entities = array();
 
   $sal_query = ting_start_query()
-    ->withRawQuery($query)
+    ->withRawQuery($query . ' and holdingsitem.agencyid=' . variable_get('ting_agency', '773000'))
     // ->withFacets(array('facet.subject'))
     //->withTermsPrFacet(26)
-    ->withSort('date_descending')
+    //->withSort('date_descending')
     ->withPage($page)
     ->withCount($size)
     ->withMaterialFilter($ignore, FALSE);
@@ -332,7 +332,10 @@ function ting_object_tree_find_entities_with_covers($query, $page, $size, array 
   }
   //file_put_contents("/var/www/drupal7vm/drupal/debug/newobj2.txt", print_r($entities, TRUE), FILE_APPEND);
   // See what materials have covers.
-  $covers = ting_covers_get(array_keys($entities));
+   $covers = ting_covers_get(array_keys($entities));
+   file_put_contents("/var/www/drupalvm/drupal/web/debug/covers.txt", print_r($covers, TRUE), FILE_APPEND);
+
+  $entities = ting_object_tree_set_covers_first($covers, $entities);
 
   $objects =  ting_object_tree_proces_results($entities);
   $links = array(); //ting_object_tree_get_subjects($results);
@@ -344,6 +347,20 @@ function ting_object_tree_find_entities_with_covers($query, $page, $size, array 
   );
 
   return $result;
+}
+
+function ting_object_tree_set_covers_first($covers, $entities) {
+  $not_cover = array();
+   foreach ($entities as $key => $entity) {
+     if (!(array_key_exists($key, $covers))) {
+        $not_cover[$key] = $entity;
+     }
+   }
+   foreach ($not_cover as $key => $entity) {
+     unset ($entities[$key]);
+     $entities[$key] = $entity;
+   }
+   return $entities;
 }
 
 function ting_object_tree_pager($results)
@@ -662,7 +679,8 @@ function ting_object_tree_search_multi($queries)
   foreach ($results as $result) {
     $response = $req[$i]->parseResponse($result);
     $key = 'search-menu-' . $queries[$i]['key'];
-    $res[$key] = $response->numTotalObjects; //The search result come back in the same order as the requests.
+    $hits = number_format($response->numTotalObjects, 0, ',', '.');
+    $res[$key] = $hits; //The search result come back in the same order as the requests.
     $i++;
   }
   file_put_contents("/var/www/drupalvm/drupal/web/debug/multi2.txt", print_r($res, TRUE), FILE_APPEND);

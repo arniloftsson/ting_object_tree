@@ -3,6 +3,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
+
 /* 
     Created on : 11-05-2019, 15:13:10
     Author     : DQ26525
@@ -15,8 +16,12 @@ and open the template in the editor.
     min-height: 340px;
 }
 
+.ting-object-tree .ting-object-tree-item .view-mode-teaser .inner {
+    background-image: url(./images/defbookcover.jpg);
+}
+
 .ting-object-tree-item h2 {
-    font-family: FaktPro-Light,sans-serif;
+    font-family: FaktPro-Light, sans-serif;
     font-size: 14px;
     line-height: 20px;
     margin-bottom: 0px;
@@ -26,7 +31,7 @@ and open the template in the editor.
 
 .ting-object-tree-item .field-name-ting-author {
     color: #000000;
-    font-family: FaktPro-SemiBold,sans-serif;
+    font-family: FaktPro-SemiBold, sans-serif;
     font-size: 14px;
 }
 
@@ -41,10 +46,9 @@ and open the template in the editor.
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    background: linear-gradient(rgba(255,138,0,.2),#fff);
+    background: linear-gradient(rgba(255, 138, 0, .2), #fff);
     padding-top: 20px;
     padding-bottom: 20px;
-
 }
 
 .ting-object-tree-link {
@@ -57,23 +61,21 @@ and open the template in the editor.
     font-size: 18px;
     color: #006a97;
     text-transform: capitalize;
-
 }
 
 .ting-object-tree-main h2 {
-    border-bottom: 1px solid rgba(38,38,38,.2);
-} 
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
+}
 
 .ting-object-tree-item h2 {
-    border-bottom: 1px solid rgba(38,38,38,.2);
-} 
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
+}
 
 .ting-object-tree-breadcrumb {
     margin-bottom: 20px;
 }
 
-
-.ting-object-tree-breadcrumb-icon::after  {
+.ting-object-tree-breadcrumb-icon::after {
     content: "\e903";
     font-family: icomoon;
     font-size: 8px;
@@ -86,7 +88,6 @@ and open the template in the editor.
 
 .ting-object-tree-links h2 {
     display: block;
-
 }
 
 .ting-object-tree-page .secondary-content {
@@ -125,7 +126,7 @@ and open the template in the editor.
 }
 
 .ting-object-tree-menu .sub-menu-title {
-    border-bottom: 1px solid rgba(38,38,38,.2);
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
     padding-bottom: 25px;
     font-size: 24px;
 }
@@ -135,7 +136,7 @@ and open the template in the editor.
     font-family: icomoon;
     font-size: 8px;
     position: absolute;
-    left:0;
+    left: 0;
     display: block;
     top: -4px;
 }
@@ -147,42 +148,43 @@ and open the template in the editor.
 
 /* Smart carousel pages */
 
-.node-type-inspiration-carousel h2.pane-title  {
-    border-bottom: 1px solid rgba(38,38,38,.2);
+.node-type-inspiration-carousel h2.pane-title {
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
 }
 
-.node-type-inspiration-carousel .pane-ting-smart-carousel-content h2.pane-title  {
+.node-type-inspiration-carousel .pane-ting-smart-carousel-content h2.pane-title {
     border-bottom: none;
     font-size: 28px;
     line-height: 28px;
 }
 
-
-.pane-ting-smart-carousel-objects{
+.pane-ting-smart-carousel-objects {
     margin-top: 17px;
 }
+
 .pane-ting-smart-carousel-content {
     padding-left: 10px;
 }
 
-.node-type-inspiration-carousel  .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
+.node-type-inspiration-carousel .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
     width: 194px;
     margin-right: 20px;
 }
 
-.node-type-inspiration-carousel  .ding-carousel-item .field-name-ting-author {
+.node-type-inspiration-carousel .ding-carousel-item .field-name-ting-author {
     font-size: 14px;
 }
 
-.node-type-inspiration-carousel .field-name-ting-title h2  {
-    border-bottom: 1px solid rgba(38,38,38,.2);
+.node-type-inspiration-carousel .field-name-ting-title h2 {
+    border-bottom: 1px solid rgba(38, 38, 38, .2);
 }
 
-.node-type-inspiration-carousel  .pane-carousel .ding-carousel .slick-slider {
+.node-type-inspiration-carousel .pane-carousel .ding-carousel .slick-slider {
     min-height: 380px;
 }
 
 /* Mobile categories */
+
 .ting-object-tree-mobile-categories {
     display: none;
 }
@@ -192,49 +194,40 @@ and open the template in the editor.
         display: block;
         margin-top: 0px;
     }
-
     .pane-content .ting-object-tree-page .secondary-content {
         display: none;
     }
-
     .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .secondary-content {
         display: none;
     }
-
     .pane-content .ting-object-tree-page .ting-object-tree-main {
         width: 100%;
         float: none;
         margin-top: -20px;
     }
-
     .ting-object-tree-mobile-categories .more-link a {
         float: none;
         margin-bottom: 15px;
         display: block;
         width: 100%;
     }
-
     .ting-object-tree-mobile-categories .more-link a::after {
         display: block;
         content: "\e901";
         color: #ffffff;
-    } 
-
-    .pane-content .ting-object-tree-main  .pane-title {
+    }
+    .pane-content .ting-object-tree-main .pane-title {
         margin-top: 40px;
         font-size: 40px;
         color: #006a97;
     }
-
     .node-type-inspiration-carousel .primary-content {
         margin-top: -20px;
     }
-
     .node-type-inspiration-carousel .pane-node-content h2.pane-title {
         margin-top: 40px;
         font-size: 40px;
     }
-
     .node-type-inspiration-carousel .content-wrapper .pane-content .default-panel-layout .left-and-main-content .layout-wrapper .primary-content {
         width: 100%;
     }
@@ -247,16 +240,14 @@ and open the template in the editor.
 }
 
 .ting-object-tree-objects-previous {
-    float:left;
+    float: left;
     margin-right: 30px;
-
 }
 
 .ting-object-tree-pager .ting-object-tree-objects-previous a {
     padding-left: 80px;
     padding-right: 15px;
 }
-
 
 .ting-object-tree-pager .more-link {
     clear: none;
@@ -266,7 +257,7 @@ and open the template in the editor.
     display: none;
 }
 
-.ting-object-tree-pager .ting-object-tree-objects-previous a::before{
+.ting-object-tree-pager .ting-object-tree-objects-previous a::before {
     content: "\e902";
     font-family: icomoon;
     font-style: normal;
@@ -279,7 +270,7 @@ and open the template in the editor.
     left: 10px;
 }
 
-@media only screen and (max-width: 768px) { 
+@media only screen and (max-width: 768px) {
     .ting-object-tree-pager .more-link a {
         width: 130px;
         margin-right: 20px;
@@ -287,44 +278,55 @@ and open the template in the editor.
     .ting-object-tree-pager .more-link a::after {
         display: block;
     }
-
     .ting-object-tree-pager .ting-object-tree-objects-previous a::after {
         display: none;
     }
-
     .ting-object-tree-pager .ting-object-tree-objects-previous a {
         padding-left: 60px;
     }
-
-    .ting-object-tree-pager .ting-object-tree-objects-previous a::before{
+    .ting-object-tree-pager .ting-object-tree-objects-previous a::before {
         left: 0px;
     }
-
     .ting-object-tree-pager .more-link a::after {
-        left:70px;
+        left: 70px;
     }
 }
-  
 
-    /* Mobile */
-    @media only screen and (max-width: 768px) { 
-        .ting-object-tree-page  .ting-object-tree-item {
-            width: 154px;
-            min-height: 300px;
-        }
-        .ting-object-tree  .ting-object-tree-item {
-            width: 154px;
-            min-height: 300px;
-        }
-        .node-type-inspiration-carousel  .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
-            width: 154px;
-        }
-        .pane-ting-smart-carousel-content {
-            margin-bottom: 20px;
-        }
+/* Mobile */
 
-        .ting-object-tree-breadcrumb {
-            border-bottom: 1px solid rgba(38,38,38,.2);
-        }
+@media only screen and (max-width: 768px) {
+    .ting-object-tree-page .ting-object-tree-item {
+        width: 154px;
+        min-height: 300px;
     }
+    .ting-object-tree .ting-object-tree-item {
+        width: 154px;
+        min-height: 300px;
+    }
+    .node-type-inspiration-carousel .pane-carousel .ding-carousel .slick-slider .slick-track .slick-slide {
+        width: 154px;
+    }
+    .pane-ting-smart-carousel-content {
+        margin-bottom: 20px;
+    }
+    .ting-object-tree-breadcrumb {
+        border-bottom: 1px solid rgba(38, 38, 38, .2);
+    }
+}
+
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 5px 7px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 10px;
+    margin-left: 10px;
+}
 
